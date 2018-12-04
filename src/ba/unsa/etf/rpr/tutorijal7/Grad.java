@@ -1,10 +1,12 @@
 package ba.unsa.etf.rpr.tutorijal7;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
 public class Grad {
     private String naziv = "";
     private int brojStanovnika = 0;
     private double[] temperatura = new double[1000];
-    private int btemp = 0;
 
     public String getNaziv() {
         return naziv;
@@ -23,25 +25,24 @@ public class Grad {
     }
 
     public double[] getTemperatura() {
-        return temperatura;
-    }
-
-    public void setTemperatura(double temperatura)
-    {
-        this.getTemperatura()[getBtemp()] = temperatura;
-        setBtemp(getBtemp() + 1);
+        return Arrays.copyOf(temperatura,temperatura.length);
     }
 
 
     public void setTemperatura(double[] temperatura) {
-        this.temperatura = temperatura;
+        this.temperatura = Arrays.copyOf(temperatura, temperatura.length);
     }
 
-    public int getBtemp() {
-        return btemp;
+
+    @Override
+    public String toString(){
+        String s = getNaziv();
+        s+=",";
+        for(int i=0; i<temperatura.length;i++){
+            s+=temperatura[i];
+            if(i!=temperatura.length-1) s+=",";
+        }
+        return s;
     }
 
-    public void setBtemp(int btemp) {
-        this.btemp = btemp;
-    }
 }
