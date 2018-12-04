@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Tutorijal {
-    // izdvaja naziv grada
+   /* // izdvaja naziv grada
     public static String izdvojiString(String s){
         String pov = "";
         for(int i=0;i<s.length();i++){
@@ -23,7 +23,7 @@ public class Tutorijal {
             pov.add(brojevi.nextInt());
         }
         return pov;
-    }
+    }*/
 
 
     public static ArrayList<Grad> dodajGradove(){
@@ -36,20 +36,16 @@ public class Tutorijal {
             return null;
         }
 
-
         ArrayList<Grad> gradovi = new ArrayList<>();
         int brojac = 0;
         while(ulaz.hasNextLine()){
-
             gradovi.add(new Grad());
             String linija = ulaz.nextLine();
-
-            gradovi.get(brojac).setNaziv(izdvojiString(linija));
-
-            ArrayList<Integer> temp = izdvojiNiz(linija);
-            for(int i=0; i<temp.size();i++)
-                gradovi.get(brojac).setTemperatura(temp.get(i));
-
+            String []parts = linija.split(",");
+            gradovi.get(brojac).setNaziv(parts[0]);
+            for(int i = 1; i<parts.length;i++)
+                gradovi.get(brojac).setTemperatura( Double.parseDouble(parts[i]));
+            gradovi.add(new Grad());
             brojac++;
         }
         return gradovi;
