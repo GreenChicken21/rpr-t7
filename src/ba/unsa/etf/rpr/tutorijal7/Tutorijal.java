@@ -8,12 +8,11 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
+import java.beans.XMLEncoder;
+import java.io.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -91,12 +90,22 @@ public class Tutorijal {
 
     }
 
+
+    public static void zapisiXml(UN un) {
+        try {
+            XMLEncoder e = new XMLEncoder(new BufferedOutputStream(new FileOutputStream("un.xml")));
+            e.writeObject(un);
+            e.close();
+        } catch(Exception e) {
+            System.out.println("Greška: " + e);
+        }
+    }
     public static void main(String[] args) {
         ArrayList<Grad> gradovi = new ArrayList<>(ucitajGradove("mjerenja.txt"));
         for (Grad grad:gradovi)
             System.out.println(grad);
         UN un = ucitajXml("drzave.xml", gradovi);
 
-
+        zapisiXml(un);
     }
 }
