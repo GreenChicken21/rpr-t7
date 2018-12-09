@@ -1,11 +1,21 @@
 package ba.unsa.etf.rpr.tutorijal7;
 
 public class Drzava {
-    private String naziv = new String();
+    private String naziv = "";
     private int brojStanovnika = 0;
     private double povrsina = 0;
-    private String jedinica = new String();
+    private String jedinica = "";
     private Grad glavniGrad = new Grad();
+
+    public Drzava(){}
+
+    public Drzava(String naziv, int stanovnika, double povrsina, String jedinica, Grad glavniGrad) {
+        setNaziv(naziv);
+        setBrojStanovnika(stanovnika);
+        setPovrsina(povrsina);
+        setJedinica(jedinica);
+        setGlavniGrad(glavniGrad);
+    }
 
 
     public String getNaziv() {

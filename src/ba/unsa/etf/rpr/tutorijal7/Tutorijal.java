@@ -18,26 +18,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Tutorijal {
-   /* // izdvaja naziv grada
-    public static String izdvojiString(String s){
-        String pov = "";
-        for(int i=0;i<s.length();i++){
-            if(s.charAt(i) == ',')return pov;
-            pov += s.charAt(i);
-        }
-        return pov;
-    }
-    // izdvaja temperature u niz
-    private static ArrayList<Integer> izdvojiNiz(String linija) {
-        ArrayList<Integer> pov = new ArrayList<>();
-        Scanner brojevi = new Scanner(linija);
-        while(brojevi.hasNext()){
-            pov.add(brojevi.nextInt());
-        }
-        return pov;
-    }*/
-
-
+    // metoda napravljena takva da radi sa bilo kojom .txt datotekom
     public static ArrayList<Grad> ucitajGradove(String fileName){
 
         Scanner ulaz = null;
@@ -50,11 +31,12 @@ public class Tutorijal {
 
         ArrayList<Grad> gradovi = new ArrayList<>();
         while(ulaz.hasNextLine()){
-            // alociranje novog grada
-            gradovi.add(new Grad());
             // izdvajanje linije datoteke i slitanje
             String linija = ulaz.nextLine();
+            // ako se slucajno nalazi prazan red u datoteci ili makar jedan znak u redu preskace
+            if(linija.length() <= 1)continue;
             String []parts = linija.split(",");
+            gradovi.add(new Grad());
             // postavljanje naziva
             gradovi.get(gradovi.size()-1).setNaziv(parts[0]);
             // izdvajanje temperatura i postavljanje u grad
@@ -65,31 +47,56 @@ public class Tutorijal {
         }
         return gradovi;
     }
-
-    public static UN ucitajXml(String fileName){
+    public static UN ucitajXml(String fileName, ArrayList<Grad> gradovi){
 
         UN un = new UN();
 
         Document xmldoc = null;
         try {
-            DocumentBuilder docReader
-                    = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            DocumentBuilder docReader = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             xmldoc = docReader.parse(new File("drzave.xml"));
         }
         catch (Exception e) {
             System.out.println("drzave.xml nije validan XML dokument");
             return null;
         }
+        ArrayList<Drzava> drzave = new ArrayList<>();
 
-        Element korijen = xmldoc.getDocumentElement();
-        
+        NodeList drzaveXml = xmldoc.getElementsByTagName("drzava");
 
+        for(int i = 0; i < drzaveXml.getLength(); i++) {
+            Node drzavaNode = drzaveXml.item(i);
+
+            if(drzavaNode instanceof Element) {
+                Element drzavaEl = (Element)drzavaNode;
+
+                int stanovnika = Integer.parseInt(drzavaEl.getAttribute("stanovnika"));
+                String naziv = drzavaEl.getElementsByTagName("naziv").item(0).getTextContent();
+
+                Element gGradXml = (Element)drzavaEl.getElementsByTagName("glavnigrad").item(0);
+                int gStanovnika = Integer.parseInt(gGradXml.getAttribute("stanovnika"));
+                String nazivGrada = gGradXml.getTextContent().trim();
+
+                Element povrsinaXml = (Element)drzavaEl.getElementsByTagName("povrsina").item(0);
+                String jedinica = povrsinaXml.getAttribute("jedinica");
+                double povrsina = Double.parseDouble(drzavaEl.getElementsByTagName("povrsina").item(0).getTextContent());
+
+                Grad glavniGrad = new Grad(nazivGrada, gStanovnika, null);
+                drzave.add(new Drzava(naziv, stanovnika, povrsina, jedinica, glavniGrad));
+            }
+        }
+
+        un.setListaDrzava(drzave);
         return un;
+
     }
 
     public static void main(String[] args) {
         ArrayList<Grad> gradovi = new ArrayList<>(ucitajGradove("mjerenja.txt"));
-        System.out.println(gradovi.get(0));
-        System.out.println(gradovi.get(1));
+        for (Grad grad:gradovi)
+            System.out.println(grad);
+        UN un = ucitajXml("drzave.xml", gradovi);
+
+
     }
 }
